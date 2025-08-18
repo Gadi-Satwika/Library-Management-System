@@ -1,3 +1,69 @@
+# 📚 Library Management System
+
+This project is a simple **Library Management System** that includes:
+
+- ✅ User Signup
+- ✅ User Login
+- ✅ Admin Login
+- ✅ Frontend: HTML, CSS, Bootstrap, JavaScript
+- ✅ Backend: Python (Flask)
+- ✅ Database: MongoDB
+
+---
+
+## ✨ Features
+
+### 👤 User
+- Sign up with **Name**, **Email**, **Mobile Number**, and **Password**
+- Login using email and password
+- View library dashboard (future scope: borrow books, view history, etc.)
+
+### 🛠️ Admin
+- Secure login with admin credentials
+- Manage books, users, and track activity (to be implemented)
+
+---
+
+## 🔧 Technologies Used
+
+| Layer       | Tech                        |
+|-------------|-----------------------------|
+| Frontend    | HTML, CSS, Bootstrap, JS    |
+| Backend     | Python (Flask)              |
+| Database    | MongoDB (with PyMongo)      |
+
+---
+
+## 🗂️ Project Structure
+
+library-management/
+public/
+│
+├── static/
+│ ├── css/
+│ │ └── styles.css
+│ └── js/
+│ └── scripts.js
+│
+├── templates/
+│ ├── user_signup.html
+│ ├── user_login.html
+│ ├── user_dashboard.html
+│ ├── admin_signup.html
+│ ├── admin_login.html
+│ ├── admin_dashboard.html
+│ ├── forgot_password.html
+│ ├── reset_password.html
+│
+├── app.py
+├── requirements.txt
+└── README.md
+
+
+#Satwika
+
+
+
 📚 Library Management System
 A Flask + MongoDB based web application for managing a library.
 The system has two sides:
@@ -18,10 +84,7 @@ Admin
 
 🗂 Filter books by category
 
-User
-📚 View all available books
-
-🔍 Search & filter books by category
+    
 
 🛠 Tech Stack
 Backend: Python, Flask
@@ -66,3 +129,34 @@ library-management-system/
 │   │-- edit_borrowed_book.html
 │   │-- user_books.html
 │   └-- categories.html
+
+
+🎫 Support Ticket System
+
+The project now includes a Support Ticket feature that allows users to raise issues or requests directly within the system.
+
+🔹 Features
+
+Users can create new support tickets with details (title, description, priority).
+
+Tickets are stored in the database for tracking.
+
+Admins can view, update status, and respond to tickets.
+
+Status options: Open, In Progress, Resolved, Closed.
+
+Users can track the progress of their tickets from their dashboard.
+
+🔹 Endpoints / Pages
+
+User:
+
+Create Ticket
+
+View My Tickets
+
+Admin:
+
+View All Tickets
+
+Update Ticket Status
