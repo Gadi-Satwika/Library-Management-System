@@ -1,37 +1,29 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import secrets
 import re
 from dotenv import load_dotenv
 from pathlib import Path
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from datetime import datetime, timezone
-# from datetime import datetime
-# from bson import ObjectId
-
 
 # Initialize Flask app
 app = Flask(__name__)
 load_dotenv()
 
-
 # Configuration
-app.secret_key = "supersecretkey"
-app.config['MONGO_URI'] = "mongodb://localhost:27017/library_db"
-# Initialize extensions
-mongo = PyMongo(app)
+app.secret_key = os.getenv('SECRET_KEY')
 
-# MongoDB setup
-client = MongoClient("mongodb://localhost:27017/")
-db = client['library_db']
-books_col = db.books
-borrowed_books_col = db.borrowed_books
-books_collection = db['books']
-borrowed_books_col = db['borrowed_books']
+# MongoDB setup (Atlas connection)
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client["library_db"]
+
+# Collections
+books_col = db["books"]
+borrowed_books_col = db["borrowed_books"]
+
 
 # No need for a separate class, we'll use MongoDB collections directly
 # But you can create a helper function for structure:
@@ -58,13 +50,13 @@ def index():
 def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email')
-        user = mongo.db.users.find_one({'email': email})
+        user = db.users.find_one({'email': email})
         
         if user:
             token = secrets.token_urlsafe(32)
             expiry = datetime.now() + timedelta(hours=1)
             
-            mongo.db.password_resets.insert_one({
+            db.password_resets.insert_one({
                 'email': email,
                 'token': token,
                 'expires_at': expiry
@@ -81,7 +73,7 @@ def forgot_password():
 
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    reset_request = mongo.db.password_resets.find_one({
+    reset_request = db.password_resets.find_one({
         'token': token,
         'expires_at': {'$gt': datetime.now()}
     })
@@ -98,12 +90,12 @@ def reset_password(token):
             flash('Passwords do not match', 'danger')
             return redirect(request.url)
         
-        mongo.db.users.update_one(
+        db.users.update_one(
             {'email': reset_request['email']},
             {'$set': {'password': generate_password_hash(password)}}
         )
         
-        mongo.db.password_resets.delete_one({'token': token})
+        db.password_resets.delete_one({'token': token})
         
         flash('Password updated successfully! Please login.', 'success')
         return redirect(url_for('user_login'))
@@ -122,7 +114,7 @@ def user_login():
             flash('Please fill in all fields', 'danger')
             return redirect(url_for('user_login'))
         
-        user = mongo.db.users.find_one({'email': email, 'role': 'user'})
+        user = db.users.find_one({'email': email, 'role': 'user'})
         
         if user and check_password_hash(user['password'], password):
             session['user_id'] = str(user['_id'])
@@ -146,7 +138,7 @@ def admin_login():
             flash('Please fill in all fields', 'danger')
             return redirect(url_for('admin_login'))
         
-        admin = mongo.db.users.find_one({'email': email, 'role': 'admin'})
+        admin = db.users.find_one({'email': email, 'role': 'admin'})
         
         if admin and check_password_hash(admin['password'], password):
             session['user_id'] = str(admin['_id'])
@@ -181,13 +173,13 @@ def user_signup():
             flash('Please fill in all fields', 'danger')
             return redirect(url_for('user_signup'))
         
-        existing_user = mongo.db.users.find_one({'$or': [{'email': email}, {'mobile': mobile}]})
+        existing_user = db.users.find_one({'$or': [{'email': email}, {'mobile': mobile}]})
         if existing_user:
             flash('Email or mobile already registered', 'danger')
             return redirect(url_for('user_signup'))
         
         # Create new user
-        mongo.db.users.insert_one({
+        db.users.insert_one({
             'full_name': full_name,
             'email': email,
             'mobile': mobile,
@@ -221,13 +213,13 @@ def admin_signup():
             flash('Please fill in all fields', 'danger')
             return redirect(url_for('admin_signup'))
                  # Check if admin already exists
-        existing_admin = mongo.db.users.find_one({'$or': [{'email': email}, {'mobile': mobile}]})
+        existing_admin = db.users.find_one({'$or': [{'email': email}, {'mobile': mobile}]})
         if existing_admin:
             flash('Email or mobile already registered', 'danger')
             return redirect(url_for('admin_signup'))
         
         # Create new admin
-        mongo.db.users.insert_one({
+        db.users.insert_one({
             'full_name': full_name,
             'email': email,
             'mobile': mobile,
@@ -510,7 +502,7 @@ def submit_ticket():
     }
     
     try:
-        mongo.db.tickets.insert_one(ticket_data)
+        db.tickets.insert_one(ticket_data)
         flash('Your support ticket has been submitted successfully!', 'success')
         return redirect(url_for('user_support'))
     except Exception as e:
@@ -526,7 +518,7 @@ def admin_support():
         return redirect(url_for('admin_login'))
     
     # Get all tickets with user information
-    tickets = list(mongo.db.tickets.aggregate([
+    tickets = list(db.tickets.aggregate([
         {
             '$lookup': {
                 'from': 'users',
@@ -553,7 +545,7 @@ def resolve_ticket(ticket_id):
         flash('Resolution text is required', 'danger')
         return redirect(url_for('admin_support'))
     
-    mongo.db.tickets.update_one(
+    db.tickets.update_one(
         {'_id': ObjectId(ticket_id)},
         {'$set': {
             'status': 'resolved',
