@@ -2,9 +2,14 @@
 
 This project is a simple **Library Management System** that includes:
 
-- ✅ User Signup
-- ✅ User Login
-- ✅ Admin Login
+- ✅ User Signup/Login
+- ✅ Admin Login/Signup
+- ✅ CRUD Operation OnBooks
+- ✅ User Details(Borrowed/Returned)
+- ✅ Support Tickets
+- ✅ LogOut
+
+  Technolgies Used:
 - ✅ Frontend: HTML, CSS, Bootstrap, JavaScript
 - ✅ Backend: Python (Flask)
 - ✅ Database: MongoDB
@@ -21,16 +26,6 @@ This project is a simple **Library Management System** that includes:
 ### 🛠️ Admin
 - Secure login with admin credentials
 - Manage books, users, and track activity (to be implemented)
-
----
-
-## 🔧 Technologies Used
-
-| Layer       | Tech                        |
-|-------------|-----------------------------|
-| Frontend    | HTML, CSS, Bootstrap, JS    |
-| Backend     | Python (Flask)              |
-| Database    | MongoDB (with PyMongo)      |
 
 ---
 
@@ -62,8 +57,6 @@ public/
 
 #Satwika
 
-
-
 📚 Library Management System
 A Flask + MongoDB based web application for managing a library.
 The system has two sides:
@@ -84,14 +77,6 @@ Admin
 
 🗂 Filter books by category
 
-    
-
-🛠 Tech Stack
-Backend: Python, Flask
-
-Database: MongoDB
-
-Frontend: HTML, CSS, Bootstrap
 
 📦 Installation & Setup
 1️⃣ Clone the repository
@@ -147,16 +132,11 @@ Status options: Open, In Progress, Resolved, Closed.
 
 Users can track the progress of their tickets from their dashboard.
 
-🔹 Endpoints / Pages
+Live Preview: {https://library-management-system-fxus.onrender.com}
 
-User:
+~ Follow For More
+~ Any Problem? Drop a mail-> satwikagadi2005@gmail.com
 
-Create Ticket
+#ThankYou
 
-View My Tickets
 
-Admin:
-
-View All Tickets
-
-Update Ticket Status
