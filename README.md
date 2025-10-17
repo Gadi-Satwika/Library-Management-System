@@ -132,7 +132,7 @@ Status options: Open, In Progress, Resolved, Closed.
 
 Users can track the progress of their tickets from their dashboard.
 
-Live Preview: {https://library-management-system-fxus.onrender.com}
+Live Preview: https://library-management-system-fxus.onrender.com
 
 ~ Follow For More
 ~ Any Problem? Drop a mail-> satwikagadi2005@gmail.com
